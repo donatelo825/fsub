@@ -1,0 +1,19 @@
+# FsubBot — Docker Compose (dual bot, single env)
+# Persiapan: cp sample.env .env  lalu isi .env
+# Jalankan : docker compose up -d
+
+services:
+  fsubbot:
+    build: .
+    container_name: fsubbot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - fsubnet
+
+networks:
+  fsubnet:
+    driver: bridge
