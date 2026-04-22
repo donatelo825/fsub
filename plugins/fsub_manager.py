@@ -28,6 +28,17 @@ async def cmd_add_fsub(client: Bot, message: Message):
         await message.reply("❌ Channel ID harus angka. Contoh: <code>-100123456789</code>")
         return
 
+    # Validasi format: channel ID harus diawali -100
+    if not str(ch_id).startswith("-100"):
+        await message.reply(
+            f"❌ <b>Format ID salah!</b>\n\n"
+            f"Channel ID harus diawali <code>-100</code>\n"
+            f"Contoh: <code>-1001234567890</code>\n\n"
+            f"ID yang kamu masukkan: <code>{ch_id}</code>\n"
+            f"Coba: <code>-100{abs(ch_id)}</code>"
+        )
+        return
+
     current = await get_all_fsub(_col(client))
     if ch_id in current.values():
         await message.reply("⚠️ <b>Channel ini sudah ada di daftar FSUB!</b>")
