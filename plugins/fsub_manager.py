@@ -35,14 +35,42 @@ async def cmd_add_fsub(client: Bot, message: Message):
 
     try:
         info = await client.get_chat(ch_id)
-        link = info.invite_link
-        if not link:
-            await client.export_chat_invite_link(ch_id)
-            info = await client.get_chat(ch_id)
-            link = info.invite_link
     except Exception as e:
         await message.reply(
-            f"❌ <b>Gagal akses channel!</b> Pastikan bot sudah jadi admin.\n\n<code>{e}</code>"
+            f"❌ <b>Gagal get_chat!</b>\n"
+            f"Pastikan ID benar dan bot sudah join channel.\n\n"
+            f"<code>{type(e).__name__}: {e}</code>"
+        )
+        return
+
+    # Cek apakah bot adalah admin dengan permission invite link
+    try:
+        me = await client.get_chat_member(ch_id, (await client.get_me()).id)
+        from pyrogram.enums import ChatMemberStatus
+        if me.status not in (ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR):
+            await message.reply(
+                f"❌ <b>Bot bukan admin di channel ini!</b>\n"
+                f"Status bot: <code>{me.status}</code>\n\n"
+                f"Jadikan bot sebagai <b>Administrator</b> dengan izin <b>Invite Users via Link</b>."
+            )
+            return
+        if me.status == ChatMemberStatus.ADMINISTRATOR and not me.privileges.can_invite_users:
+            await message.reply(
+                f"❌ <b>Bot admin tapi tidak punya izin <i>Invite Users via Link</i>!</b>\n"
+                f"Aktifkan izin tersebut di pengaturan admin channel."
+            )
+            return
+    except Exception as e:
+        await message.reply(f"❌ <b>Gagal cek status bot:</b> <code>{type(e).__name__}: {e}</code>")
+        return
+
+    try:
+        link = info.invite_link
+        if not link:
+            link = await client.export_chat_invite_link(ch_id)
+    except Exception as e:
+        await message.reply(
+            f"❌ <b>Gagal ambil invite link!</b>\n\n<code>{type(e).__name__}: {e}</code>"
         )
         return
 
