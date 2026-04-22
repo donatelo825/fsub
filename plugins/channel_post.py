@@ -77,6 +77,9 @@ async def new_post(client: Client, message: Message):
         return
     if DISABLE_CHANNEL_BUTTON:
         return
+    # Guard: bot belum selesai start (db_channel belum di-set)
+    if not hasattr(client, "db_channel"):
+        return
 
     converted_id  = message.id * abs(client.db_channel.id)
     base64_string = await encode(f"get-{converted_id}")
