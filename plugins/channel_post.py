@@ -20,6 +20,12 @@ from helper_func import encode
         "start", "users", "broadcast", "ping", "uptime", "batch",
         "logs", "genlink", "delvar", "getvar", "setvar",
         "speedtest", "update", "stats", "vars", "id",
+        # fsub management
+        "addfsub", "rmfsub", "listfsub", "linklogs",
+        # admin management
+        "addadmin", "deladmin", "listadmin",
+        # help & about
+        "about", "help",
     ])
 )
 async def channel_post(client: Client, message: Message):
