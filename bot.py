@@ -16,8 +16,12 @@ import config  # untuk mutasi ADMINS list secara global
 
 
 class Bot(Client):
+    # Registry semua instance bot yang sudah start
+    _registry: list = []
+
     def __init__(self, bot_token: str, channel_id: int, initial_force_sub: dict,
                  session_name: str = "Bot", channel_log: int = 0):
+        Bot._registry.append(self)
         super().__init__(
             name=session_name,
             api_hash=API_HASH,

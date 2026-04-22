@@ -77,11 +77,18 @@ async def new_post(client: Client, message: Message):
         return
     if DISABLE_CHANNEL_BUTTON:
         return
-    # Guard: bot belum selesai start (db_channel belum di-set)
-    if not hasattr(client, "db_channel"):
-        return
 
-    converted_id  = message.id * abs(client.db_channel.id)
+    # Ambil db_channel dari bot ini, atau fallback ke bot lain yang sudah siap
+    db_ch = getattr(client, "db_channel", None)
+    if db_ch is None:
+        for other in Bot._registry:
+            if other is not client and hasattr(other, "db_channel"):
+                db_ch = other.db_channel
+                break
+    if db_ch is None:
+        return  # tidak ada bot yang siap sama sekali, skip
+
+    converted_id  = message.id * abs(db_ch.id)
     base64_string = await encode(f"get-{converted_id}")
     link          = f"https://t.me/{client.username}?start={base64_string}"
     from pyrogram.types import InlineKeyboardButton
