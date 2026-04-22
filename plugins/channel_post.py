@@ -78,19 +78,21 @@ async def new_post(client: Client, message: Message):
     if DISABLE_CHANNEL_BUTTON:
         return
 
-    # Ambil db_channel dari bot ini, atau fallback ke bot lain yang sudah siap
-    db_ch = getattr(client, "db_channel", None)
-    if db_ch is None:
+    # Ambil db_channel & username dari bot ini, atau fallback ke bot lain yang sudah siap
+    db_ch    = getattr(client, "db_channel", None)
+    username = getattr(client, "username", None)
+    if db_ch is None or username is None:
         for other in Bot._registry:
-            if other is not client and hasattr(other, "db_channel"):
-                db_ch = other.db_channel
+            if other is not client and hasattr(other, "db_channel") and hasattr(other, "username"):
+                db_ch    = other.db_channel
+                username = other.username
                 break
-    if db_ch is None:
+    if db_ch is None or username is None:
         return  # tidak ada bot yang siap sama sekali, skip
 
     converted_id  = message.id * abs(db_ch.id)
     base64_string = await encode(f"get-{converted_id}")
-    link          = f"https://t.me/{client.username}?start={base64_string}"
+    link          = f"https://t.me/{username}?start={base64_string}"
     from pyrogram.types import InlineKeyboardButton
     reply_markup = InlineKeyboardMarkup([[
         InlineKeyboardButton("🔁 Share Link", url=f"https://telegram.me/share/url?url={link}")
