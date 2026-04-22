@@ -5,8 +5,9 @@ from pyrogram import filters
 from pyrogram.types import Message
 from bot import Bot
 from config import ADMINS
+from helper_func import is_admin
 
-@Bot.on_message(filters.command("speedtest") & filters.user(ADMINS))
+@Bot.on_message(filters.command("speedtest") & is_admin)
 async def run_speedtest(client: Bot, message: Message):
     m = await message.reply_text("⚡️ Running Server Speedtest")
     

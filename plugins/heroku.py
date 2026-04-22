@@ -11,6 +11,7 @@ import heroku3
 import urllib3
 from bot import Bot
 from config import ADMINS, HEROKU_API_KEY, HEROKU_APP_NAME
+from helper_func import is_admin
 from pyrogram import filters
 from pyrogram.types import Message
 
@@ -41,7 +42,7 @@ def _find_env_file():
     return None
 
 
-@Bot.on_message(filters.command("getvar") & filters.user(ADMINS))
+@Bot.on_message(filters.command("getvar") & is_admin)
 async def varget_(client: Bot, message: Message):
     if len(message.command) != 2:
         return await message.reply_text("<b>Usage:</b>\n/getvar [Var Name]")
@@ -63,7 +64,7 @@ async def varget_(client: Bot, message: Message):
         return await message.reply_text(f"<b>{check_var}:</b> <code>{str(output)}</code>")
 
 
-@Bot.on_message(filters.command("delvar") & filters.user(ADMINS))
+@Bot.on_message(filters.command("delvar") & is_admin)
 async def vardel_(client: Bot, message: Message):
     if len(message.command) != 2:
         return await message.reply_text("<b>Usage:</b>\n/delvar [Var Name]")
@@ -88,7 +89,7 @@ async def vardel_(client: Bot, message: Message):
         os.system(f"kill -9 {os.getpid()} && python main.py")
 
 
-@Bot.on_message(filters.command("setvar") & filters.user(ADMINS))
+@Bot.on_message(filters.command("setvar") & is_admin)
 async def set_var(client: Bot, message: Message):
     if len(message.command) < 3:
         return await message.reply_text("<b>Usage:</b>\n/setvar [Var Name] [Var Value]")

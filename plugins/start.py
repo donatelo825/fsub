@@ -21,7 +21,7 @@ from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked
 from pyrogram.types import InlineKeyboardMarkup, Message
 from colored_reply import send_colored
 
-from helper_func import decode, get_messages, subsall, subsch, subsgc
+from helper_func import decode, get_messages, subsall, subsch, subsgc, is_admin
 from .button import fsub_button, start_button
 
 START_TIME     = datetime.utcnow()
@@ -209,14 +209,14 @@ async def not_joined(client: Bot, message: Message):
     )
 
 
-@Bot.on_message(filters.command(["users", "stats"]) & filters.user(ADMINS))
+@Bot.on_message(filters.command(["users", "stats"]) & is_admin)
 async def get_users(client: Bot, message: Message):
     msg   = await client.send_message(chat_id=message.chat.id, text="<code>Processing ...</code>")
     users = await full_userbase()
     await msg.edit(f"{len(users)} <b>Pengguna menggunakan bot ini</b>")
 
 
-@Bot.on_message(filters.command("broadcast") & filters.user(ADMINS))
+@Bot.on_message(filters.command("broadcast") & is_admin)
 async def send_text(client: Bot, message: Message):
     if message.reply_to_message:
         query         = await query_msg()

@@ -2,6 +2,7 @@
 
 from bot import Bot
 from config import ADMINS
+from helper_func import is_admin
 from database.mongodb import (
     add_fsub, remove_fsub_by_id, get_all_fsub,
     get_link_logs,
@@ -15,7 +16,7 @@ def _col(client: Bot) -> str:
     return getattr(client, "_fsub_col_name", "fsub")
 
 
-@Bot.on_message(filters.command("addfsub") & filters.user(ADMINS) & filters.private)
+@Bot.on_message(filters.command("addfsub") & is_admin & filters.private)
 async def cmd_add_fsub(client: Bot, message: Message):
     args = message.text.split()
     if len(args) < 2:
@@ -58,7 +59,7 @@ async def cmd_add_fsub(client: Bot, message: Message):
     )
 
 
-@Bot.on_message(filters.command("rmfsub") & filters.user(ADMINS) & filters.private)
+@Bot.on_message(filters.command("rmfsub") & is_admin & filters.private)
 async def cmd_rm_fsub(client: Bot, message: Message):
     args = message.text.split()
     if len(args) < 2:
@@ -83,7 +84,7 @@ async def cmd_rm_fsub(client: Bot, message: Message):
     )
 
 
-@Bot.on_message(filters.command("listfsub") & filters.user(ADMINS) & filters.private)
+@Bot.on_message(filters.command("listfsub") & is_admin & filters.private)
 async def cmd_list_fsub(client: Bot, message: Message):
     current = await get_all_fsub(_col(client))
     if not current:
@@ -99,7 +100,7 @@ async def cmd_list_fsub(client: Bot, message: Message):
     await message.reply("\n".join(lines))
 
 
-@Bot.on_message(filters.command("linklogs") & filters.user(ADMINS) & filters.private)
+@Bot.on_message(filters.command("linklogs") & is_admin & filters.private)
 async def cmd_link_logs(client: Bot, message: Message):
     args       = message.text.split(maxsplit=1)
     key_filter = args[1].strip() if len(args) > 1 else None

@@ -11,6 +11,7 @@ from pyrogram import filters
 from pyrogram.types import Message
 
 from config import ADMINS, LOGGER
+from helper_func import is_admin
 
 UPSTREAM_REPO = "https://github.com/mrismanaziz/File-Sharing-Man"
 
@@ -49,7 +50,7 @@ def updater():
     return bool(changelog)
 
 
-@Bot.on_message(filters.command("update") & filters.user(ADMINS))
+@Bot.on_message(filters.command("update") & is_admin)
 async def update_bot(_, message: Message):
     msg          = await message.reply_text("Checking updates...")
     update_avail = updater()
@@ -64,7 +65,7 @@ async def update_bot(_, message: Message):
     )
 
 
-@Bot.on_message(filters.command("restart") & filters.user(ADMINS))
+@Bot.on_message(filters.command("restart") & is_admin)
 async def restart_bot(_, message: Message):
     try:
         msg = await message.reply_text("<code>Restarting bot...</code>")

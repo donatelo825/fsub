@@ -10,12 +10,12 @@ from colored_reply import btn_primary, edit_colored
 
 from bot import Bot
 from config import ADMINS, DISABLE_CHANNEL_BUTTON, LOGGER
-from helper_func import encode
+from helper_func import encode, is_admin
 
 
 @Bot.on_message(
     filters.private
-    & filters.user(ADMINS)
+    & is_admin
     & ~filters.command([
         "start", "users", "broadcast", "ping", "uptime", "batch",
         "logs", "genlink", "delvar", "getvar", "setvar",

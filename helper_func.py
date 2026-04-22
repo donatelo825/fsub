@@ -14,6 +14,17 @@ from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
 from config import ADMINS
 
 
+# ── Dynamic admin filter ──────────────────────────────────────────────────────
+# filters.user(ADMINS) meng-copy list ke set saat bot start, sehingga admin
+# yang ditambah via /addadmin tidak dikenali. Filter ini baca config.ADMINS
+# secara langsung setiap kali ada pesan masuk.
+async def _admin_check(_, __, message):
+    return bool(message.from_user and message.from_user.id in ADMINS)
+
+is_admin = filters.create(_admin_check)
+# ─────────────────────────────────────────────────────────────────────────────
+
+
 async def _check_all_fsub(client, user_id: int) -> bool:
     if user_id in ADMINS:
         return True
