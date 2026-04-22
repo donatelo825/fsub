@@ -3,8 +3,8 @@
 import os
 
 from bot import Bot
-from config import (
 from helper_func import is_admin
+from config import (
     ADMINS,
     API_HASH,
     APP_ID,
